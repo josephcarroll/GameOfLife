@@ -25,18 +25,10 @@ function render() {
 			var actualX = Math.floor(x / scale);
 			var pixel = pixels[actualY * pixelWidth + actualX];
 			var index = (y * width + x) * 4;
-			if(pixel >= 1) {
-				var opacity = Math.round(((10.0 - pixel) / 10.0) * 255);
-				data[index + 0] = 255;
-				data[index + 1] = 0;
-				data[index + 2] = 0;
-				data[index + 3] = opacity;
-			} else {
-				data[index + 0] = 0;
-				data[index + 1] = 0;
-				data[index + 2] = 0;
-				data[index + 3] = 255;
-			}
+			data[index + 0] = pixel * 255;
+			data[index + 1] = 0;
+			data[index + 2] = 0;
+			data[index + 3] = 255;
 		}
 	};
 	ctx.putImageData(imageData, 0, 0);
@@ -67,11 +59,11 @@ function tick() {
 			var index = y * pixelWidth + x;
 			var current = pixels[index];
 			var neighbourCount = neighbours(x, y);
-			if (current >= 1 && neighbourCount < 2) {
+			if (current == 1 && neighbourCount < 2) {
 				off[index] = 0;
-			} else if (current >= 1 && (neighbourCount == 2 || neighbourCount == 3)) {
-				off[index] += 1;
-			} else if (current >= 1 && neighbourCount > 3) {
+			} else if (current == 1 && (neighbourCount == 2 || neighbourCount == 3)) {
+				off[index] = 1;
+			} else if (current == 1 && neighbourCount > 3) {
 				off[index] = 0;
 			} else if (current == 0 && neighbourCount == 3) {
 				off[index] = 1;
