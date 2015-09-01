@@ -63,19 +63,20 @@ function render() {
 
 function tick() {	
 	for (var y = 0; y < pixelHeight; y++) {
-		for (var x = 0; x < pixelWidth; x++) {	
-			var current = pixels[y * pixelWidth + x];
+		for (var x = 0; x < pixelWidth; x++) {
+			var index = y * pixelWidth + x;
+			var current = pixels[index];
 			var neighbourCount = neighbours(x, y);
 			if (current >= 1 && neighbourCount < 2) {
-				off[y * pixelWidth + x] = 0;
+				off[index] = 0;
 			} else if (current >= 1 && (neighbourCount == 2 || neighbourCount == 3)) {
-				off[y * pixelWidth + x] += 1;
+				off[index] += 1;
 			} else if (current >= 1 && neighbourCount > 3) {
-				off[y * pixelWidth + x] = 0;
+				off[index] = 0;
 			} else if (current == 0 && neighbourCount == 3) {
-				off[y * pixelWidth + x] = 1;
+				off[index] = 1;
 			} else {
-				off[y * pixelWidth + x] = 0;
+				off[index] = 0;
 			}
 		}
 	}
