@@ -10,7 +10,6 @@ var data;
 var scale;
 var pixelWidth;
 var pixelHeight;
-var buf1, buf2;
 var pixels;
 var off;
 
@@ -24,7 +23,7 @@ function render() {
 		for (var x = 0; x < width; x++) {
 			var actualY = Math.floor(y / scale);
 			var actualX = Math.floor(x / scale);
-			var pixel = pixels[actualY][actualX];
+			var pixel = pixels[actualY * pixelWidth + actualX];
 			var index = (y * width + x) * 4;
 			if(pixel >= 1) {
 				var opacity = Math.round(((10.0 - pixel) / 10.0) * 255);
@@ -62,32 +61,21 @@ function render() {
 	ctx.fillText(fps, 10, 25);
 }
 
-function createGrid() {
-	var grid = new Array(pixelWidth);
-	for (var x = 0; x < pixelWidth; x++) {
-		grid[x] = new Array(pixelHeight);
-		for (var y = 0; y < pixelHeight; y++) {
-			grid[x][y] = 0;
-		}
-	};
-	return grid;
-}
-
 function tick() {	
 	for (var y = 0; y < pixelHeight; y++) {
 		for (var x = 0; x < pixelWidth; x++) {	
-			var current = pixels[y][x];
+			var current = pixels[y * pixelWidth + x];
 			var neighbourCount = neighbours(x, y);
 			if (current >= 1 && neighbourCount < 2) {
-				off[y][x] = 0;
+				off[y * pixelWidth + x] = 0;
 			} else if (current >= 1 && (neighbourCount == 2 || neighbourCount == 3)) {
-				off[y][x] += 1;
+				off[y * pixelWidth + x] += 1;
 			} else if (current >= 1 && neighbourCount > 3) {
-				off[y][x] = 0;
+				off[y * pixelWidth + x] = 0;
 			} else if (current == 0 && neighbourCount == 3) {
-				off[y][x] = 1;
+				off[y * pixelWidth + x] = 1;
 			} else {
-				off[y][x] = 0;
+				off[y * pixelWidth + x] = 0;
 			}
 		}
 	}
@@ -105,7 +93,7 @@ function neighbours(x, y) {
 			var newY = y + deltaY;
 			if (newX >= 0 && newX < pixelWidth && newY >= 0 && newY < pixelHeight) {
 				if (!(deltaX == 0 && deltaY == 0)) {
-					var cell = pixels[newY][newX];
+					var cell = pixels[newY * pixelWidth + newX];
 					if (cell >= 1) {
 						count += 1;
 					}
@@ -126,18 +114,21 @@ function start() {
 	imageData = ctx.getImageData(0, 0, width, height);
 	data = imageData.data;
 
-	pixelWidth = width / scale;
-	pixelHeight = height / scale;
-	buf1 = createGrid();
-	buf2 = createGrid();
-	pixels = buf1;
-	off = buf2;
+	pixelWidth     = width / scale;
+	pixelHeight    = height / scale;
+	var pixelCount = pixelWidth * pixelHeight;
+	pixels         = new Array(pixelCount);
+	off            = new Array(pixelCount);
 
-	var initialCount = 0.2 * pixelWidth * pixelHeight;
+    for (var i = 0; i < pixelCount; i++) {
+		pixels[i] = 0;
+		off[i]    = 0;
+	};
+	var initialCount = 0.2 * pixelCount;
 	for (var i = 0; i < initialCount; i++) {
 		var randomX = Math.round(Math.random() * (pixelWidth  - 1));
 		var randomY = Math.round(Math.random() * (pixelHeight - 1));
-		buf1[randomY][randomX] = 1;
+		pixels[randomY * pixelWidth + randomX] = 1;
 	};
 
 	setInterval(tick, 50);
