@@ -13,10 +13,10 @@ var pixelHeight;
 var pixels;
 var off;
 
-var dataPoints = [];
+var renderTime = new Avg(1000);
+var calcTime = new Avg(1000);
 
 function render() {
-	iteration += 1;
 	var before = Date.now();
 
 	for (var y = 0; y < height; y++) {
@@ -33,27 +33,21 @@ function render() {
 	};
 	ctx.putImageData(imageData, 0, 0);
 
-	var sampleSize = 100;
 	var duration = Date.now() - before;
-	dataPoints.push(duration);
-	if (dataPoints.length >= sampleSize) {
-		dataPoints = dataPoints.slice(1, sampleSize);
-	}
-	var sum = 0;
-	for(var i = 0; i < dataPoints.length; i++) {
-		sum = sum + dataPoints[i];
-	}
-	var avg = sum / sampleSize;
-	var fps = "render: ~" + Math.round(1000 / avg) + "fps, iterations: " + iteration;
+    renderTime.sample(duration);
+	var fps = "calc: ~" + Math.round(calcTime.get()) + "ms, render: ~" + Math.round(1000 / renderTime.get()) + "fps, iterations: " + iteration;
 
 	ctx.font = "20px Monaco";
-	ctx.fillStyle = "grey";
-	ctx.fillText(fps, 11, 26);
+	ctx.fillStyle = "#293026";
+	ctx.fillText(fps, 12, 27);
 	ctx.fillStyle = "#00FF00";
 	ctx.fillText(fps, 10, 25);
 }
 
 function tick() {	
+	iteration += 1;
+	var before = Date.now();
+
 	for (var y = 0; y < pixelHeight; y++) {
 		for (var x = 0; x < pixelWidth; x++) {
 			var index = y * pixelWidth + x;
@@ -76,6 +70,9 @@ function tick() {
 	var newOff = pixels;
 	pixels = off;
 	off = newOff;
+
+    var duration = Date.now() - before;
+	calcTime.sample(duration);
 }
 
 function neighbours(x, y) {
