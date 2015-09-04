@@ -35,7 +35,7 @@ function render() {
 
 	var duration = Date.now() - before;
     renderTime.sample(duration);
-	var fps = "calc: ~" + Math.round(calcTime.get()) + "ms, render: ~" + Math.round(1000 / renderTime.get()) + "fps, iterations: " + iteration;
+	var fps = "calc: ~" + Math.round(calcTime.get()) + "ms, render: ~" + Math.round(renderTime.get()) + "ms, iterations: " + iteration;
 
 	ctx.font = "20px Monaco";
 	ctx.fillStyle = "#293026";
