@@ -1,2 +1,2 @@
 # GameOfLife
-Simple js implementation of game of life. See [here](joecarroll.io/gameoflife.html) for a running example.
+Simple js implementation of game of life. See [here](http://joecarroll.io/gameoflife.html) for a running example.
