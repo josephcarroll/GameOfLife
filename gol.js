@@ -39,12 +39,15 @@ function render() {
     renderTime.sample(duration);
 	var fps = "calc: ~" + Math.round(calcTime.get()) + "ms, render: ~" + Math.round(renderTime.get()) + "ms, iterations: " + iteration;
 
+	ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+	ctx.fillRect(0, 0, width, 40);
+
 	ctx.font = "20px Monaco";
 	ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
 	ctx.shadowOffsetX = 1;
 	ctx.shadowOffsetY = 1;
 	ctx.shadowBlur = 1;
-	ctx.fillStyle = "#00adf9";
+	ctx.fillStyle = "#006ef9";
 	ctx.fillText(fps, 10, 25);
 }
 
