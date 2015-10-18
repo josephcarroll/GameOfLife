@@ -13,6 +13,7 @@ var pixelHeight;
 var pixelCount;
 var pixels;
 var off;
+var seen;
 
 var renderTime = new Avg(1000);
 var calcTime = new Avg(1000);
@@ -25,11 +26,19 @@ function render() {
 			var actualY = Math.floor(y / scale);
 			var actualX = Math.floor(x / scale);
 			var pixel = pixels[actualY * pixelWidth + actualX];
+			var seenBefore = seen[actualY * pixelWidth + actualX];
+
 			var index = (y * width + x) * 4;
-			var color = 255 - (pixel * 255);
-			data[index + 0] = color;
-			data[index + 1] = color;
-			data[index + 2] = color;
+			var colour = 255;
+			if (seenBefore) {
+				colour = 192;
+			} 
+			if (pixel) {
+				colour = 0;
+			}
+			data[index + 0] = colour;
+			data[index + 1] = colour;
+			data[index + 2] = colour;
 			data[index + 3] = 255;
 		}
 	};
@@ -39,7 +48,7 @@ function render() {
     renderTime.sample(duration);
 	var fps = "calc: ~" + Math.round(calcTime.get()) + "ms, render: ~" + Math.round(renderTime.get()) + "ms, iterations: " + iteration;
 
-	ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+	ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
 	ctx.fillRect(0, 0, width, 40);
 
 	ctx.font = "20px Monaco";
@@ -47,7 +56,7 @@ function render() {
 	ctx.shadowOffsetX = 1;
 	ctx.shadowOffsetY = 1;
 	ctx.shadowBlur = 1;
-	ctx.fillStyle = "#006ef9";
+	ctx.fillStyle = "white";
 	ctx.fillText(fps, 10, 25);
 }
 
@@ -64,10 +73,12 @@ function tick() {
 				off[index] = 0;
 			} else if (current == 1 && (neighbourCount == 2 || neighbourCount == 3)) {
 				off[index] = 1;
+				seen[index] = 1;
 			} else if (current == 1 && neighbourCount > 3) {
 				off[index] = 0;
 			} else if (current == 0 && neighbourCount == 3) {
 				off[index] = 1;
+				seen[index] = 1;
 			} else {
 				off[index] = 0;
 			}
@@ -118,16 +129,19 @@ function onLoad() {
 }
 
 function initializeGame() {
+	iteration      = 0;
 	scale          = 4;
 	pixelWidth     = width / scale;
 	pixelHeight    = height / scale;
 	pixelCount     = pixelWidth * pixelHeight;
 	pixels         = new Array(pixelCount);
 	off            = new Array(pixelCount);
+	seen           = new Array(pixelCount);
 
     for (var i = 0; i < pixelCount; i++) {
 		pixels[i] = 0;
 		off[i]    = 0;
+		seen[i]   = 0;
 	};
 
 	seed();
