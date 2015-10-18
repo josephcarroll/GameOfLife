@@ -1,10 +1,17 @@
 <html>
 <head>
+	<link rel="stylesheet" type="text/css" href="gol.css">
 	<script src="http://code.jquery.com/jquery-2.1.4.js"></script>
 	<script src="avg.js"></script>
 	<script src="gol.js"></script>
 </head>
-<body onload="start()">
-	<canvas id="myCanvas" width="960" height="600"></canvas>
+<body onload="onLoad()">
+	<canvas id="myCanvas"></canvas>
+	<div class="inFront">
+		<div class="footer">
+			<button onClick="initializeGame()">Reset</button>
+			<button onClick="seed()">Seed</button>
+		</div>
+	</div>
 </body>
 </html>

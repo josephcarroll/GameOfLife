@@ -10,6 +10,7 @@ var data;
 var scale;
 var pixelWidth;
 var pixelHeight;
+var pixelCount;
 var pixels;
 var off;
 
@@ -25,9 +26,10 @@ function render() {
 			var actualX = Math.floor(x / scale);
 			var pixel = pixels[actualY * pixelWidth + actualX];
 			var index = (y * width + x) * 4;
-			data[index + 0] = pixel * 255;
-			data[index + 1] = 0;
-			data[index + 2] = 0;
+			var color = 255 - (pixel * 255);
+			data[index + 0] = color;
+			data[index + 1] = color;
+			data[index + 2] = color;
 			data[index + 3] = 255;
 		}
 	};
@@ -38,9 +40,11 @@ function render() {
 	var fps = "calc: ~" + Math.round(calcTime.get()) + "ms, render: ~" + Math.round(renderTime.get()) + "ms, iterations: " + iteration;
 
 	ctx.font = "20px Monaco";
-	ctx.fillStyle = "#293026";
-	ctx.fillText(fps, 12, 27);
-	ctx.fillStyle = "#00FF00";
+	ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+	ctx.shadowOffsetX = 1;
+	ctx.shadowOffsetY = 1;
+	ctx.shadowBlur = 1;
+	ctx.fillStyle = "#00adf9";
 	ctx.fillText(fps, 10, 25);
 }
 
@@ -94,19 +98,27 @@ function neighbours(x, y) {
 	return count;
 }
 
-function start() {
-	scale = 1;
+function onLoad() {
+	width = window.innerWidth;
+	height = window.innerHeight;
 	var canvas = $('#myCanvas').get(0);
-	width = canvas.width;
-	height = canvas.height;
+	canvas.setAttribute('width', width);
+    canvas.setAttribute('height', height);
 	ctx = canvas.getContext("2d");
-
-	imageData = ctx.getImageData(0, 0, width, height);
+	imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 	data = imageData.data;
 
+	initializeGame();
+
+	setInterval(tick, 50);
+	setInterval(function () { window.requestAnimationFrame(render); }, 10);
+}
+
+function initializeGame() {
+	scale          = 4;
 	pixelWidth     = width / scale;
 	pixelHeight    = height / scale;
-	var pixelCount = pixelWidth * pixelHeight;
+	pixelCount     = pixelWidth * pixelHeight;
 	pixels         = new Array(pixelCount);
 	off            = new Array(pixelCount);
 
@@ -114,13 +126,15 @@ function start() {
 		pixels[i] = 0;
 		off[i]    = 0;
 	};
-	var initialCount = 0.2 * pixelCount;
+
+	seed();
+}
+
+function seed() {
+	var initialCount = 0.1 * pixelCount;
 	for (var i = 0; i < initialCount; i++) {
 		var randomX = Math.round(Math.random() * (pixelWidth  - 1));
 		var randomY = Math.round(Math.random() * (pixelHeight - 1));
 		pixels[randomY * pixelWidth + randomX] = 1;
 	};
-
-	setInterval(tick, 50);
-	setInterval(function () { window.requestAnimationFrame(render); }, 10);
 }
