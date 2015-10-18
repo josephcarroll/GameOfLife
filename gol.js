@@ -1,3 +1,4 @@
+var maxSeen = 255;
 var iteration = 0;
 
 var canvas;
@@ -29,16 +30,21 @@ function render() {
 			var seenBefore = seen[actualY * pixelWidth + actualX];
 
 			var index = (y * width + x) * 4;
-			var colour = 255;
+			data[index + 0] = 255;
+			data[index + 1] = 255;
+			data[index + 2] = 255;
+
 			if (seenBefore) {
-				colour = 192;
+				var colour = maxSeen - seenBefore;
+				data[index + 0] = 0;
+				data[index + 1] = 0;
+				data[index + 2] = colour;
 			} 
 			if (pixel) {
-				colour = 0;
+				data[index + 0] = 0;
+				data[index + 1] = 0;
+				data[index + 2] = 0;
 			}
-			data[index + 0] = colour;
-			data[index + 1] = colour;
-			data[index + 2] = colour;
 			data[index + 3] = 255;
 		}
 	};
@@ -73,15 +79,16 @@ function tick() {
 				off[index] = 0;
 			} else if (current == 1 && (neighbourCount == 2 || neighbourCount == 3)) {
 				off[index] = 1;
-				seen[index] = 1;
+				seen[index] = maxSeen;
 			} else if (current == 1 && neighbourCount > 3) {
 				off[index] = 0;
 			} else if (current == 0 && neighbourCount == 3) {
 				off[index] = 1;
-				seen[index] = 1;
+				seen[index] = maxSeen;
 			} else {
 				off[index] = 0;
 			}
+			seen[index] = Math.max(0, seen[index] - 1);
 		}
 	}
 
