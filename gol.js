@@ -137,7 +137,7 @@ function onLoad() {
 
 function initializeGame() {
 	iteration      = 0;
-	scale          = 4;
+	scale          = 2;
 	pixelWidth     = width / scale;
 	pixelHeight    = height / scale;
 	pixelCount     = pixelWidth * pixelHeight;
