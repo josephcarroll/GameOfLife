@@ -1,4 +1,5 @@
 var maxSeen = 255;
+var showTracing = true;
 var iteration = 0;
 
 var canvas;
@@ -34,7 +35,7 @@ function render() {
 			data[index + 1] = 255;
 			data[index + 2] = 255;
 
-			if (seenBefore) {
+			if (showTracing && seenBefore) {
 				var colour = maxSeen - seenBefore;
 				data[index + 0] = 0;
 				data[index + 1] = 0;
@@ -161,4 +162,8 @@ function seed() {
 		var randomY = Math.round(Math.random() * (pixelHeight - 1));
 		pixels[randomY * pixelWidth + randomX] = 1;
 	};
+}
+
+function toggleTracing() {
+	showTracing = !showTracing;
 }
