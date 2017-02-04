@@ -6,12 +6,28 @@
     <script src="gol.js"></script>
 </head>
 <body onload="onLoad()">
-    <canvas id="myCanvas"></canvas>
-    <div class="inFront">
-        <div class="footer">
-            <button onClick="initializeGame()">Reset</button>
-            <button onClick="seed()">Seed</button>
-            <button onClick="toggleTracing()">Tracing</button>
+    <div id="header">
+        <div class="wrap">
+            <h1>Game of Life</h1>
+        </div>
+    </div>
+    <div id="main">
+        <div class="wrap">
+            <div id="primary">
+                <p>
+                    <canvas id="myCanvas"></canvas>
+                </p>
+                <p>
+                    <button onClick="initializeGame()">Reset</button>
+                    <button onClick="seed()">Seed</button>
+                    <button onClick="toggleTracing()">Tracing</button>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div id="footer">
+        <div class="wrap">
+            Joe Carroll
         </div>
     </div>
 </body>

@@ -1,5 +1,5 @@
 var maxSeen = 255;
-var showTracing = true;
+var showTracing = false;
 var iteration = 0;
 
 var canvas;
@@ -56,7 +56,7 @@ function render() {
     var fps = "calc: ~" + Math.round(calcTime.get()) + "ms, render: ~" + Math.round(renderTime.get()) + "ms, iterations: " + iteration;
 
     ctx.fillStyle = "rgba(0, 0, 0, 0.4)";
-    ctx.fillRect(0, 0, width, 40);
+    ctx.fillRect(0, 0, 1000, 500);
 
     ctx.font = "20px Monaco";
     ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
@@ -121,9 +121,11 @@ function neighbours(x, y) {
 }
 
 function onLoad() {
-    width = window.innerWidth;
-    height = window.innerHeight;
     var canvas = $('#myCanvas').get(0);
+    var container = $(canvas).parent();
+    width = container.width();
+    height = container.height();
+    
     canvas.setAttribute('width', width);
     canvas.setAttribute('height', height);
     ctx = canvas.getContext("2d");
